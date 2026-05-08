@@ -14,6 +14,10 @@ public enum ErrorCode implements ErrorCodeInterface {
   NULL_POINT(HttpStatus.INTERNAL_SERVER_ERROR.value(), "널 포인트 에러가 발생했습니다."),
   UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "인증이 필요합니다."),
   FORBIDDEN(HttpStatus.FORBIDDEN.value(), "접근이 거부되었습니다."),
+  ILLEGAL_ARGUMENT(HttpStatus.BAD_REQUEST.value(), "잘못된 인자가 전달되었습니다."),
+  ILLEGAL_STATE(HttpStatus.BAD_REQUEST.value(), "잘못된 상태에서 메서드가 호출되었습니다."),
+  DATA_INTEGRITY_VIOLATION(HttpStatus.CONFLICT.value(), "데이터 무결성 위반 오류입니다."),
+
   ;
 
   private final Integer httpStatusCode;
