@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -48,7 +47,7 @@ public class JwtProvider {
     return Keys.hmacShaKeyFor(secretKeyBase64.getBytes(StandardCharsets.UTF_8));
   }
 
-  public String createAccessToken(UUID id) {
+  public String createAccessToken(Long id) {
     Instant now = Instant.now();
     Instant expiryInstant = now.plus(Duration.ofSeconds(getAccessTokenExpiredAt()));
     Date expiredAt = Date.from(expiryInstant);
@@ -63,7 +62,7 @@ public class JwtProvider {
     return jwt;
   }
 
-  public String createRefreshToken(UUID id) {
+  public String createRefreshToken(Long id) {
     Instant now = Instant.now();
     Instant expiryInstant = now.plus(Duration.ofSeconds(getRefreshTokenExpiredAt()));
     Date expiredAt = Date.from(expiryInstant);

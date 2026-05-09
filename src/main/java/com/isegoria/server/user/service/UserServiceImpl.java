@@ -25,9 +25,16 @@ public class UserServiceImpl implements UserService {
   /**
    * 회원가입
    * 
-   * @param UserRequest (String email, String username, String password)
-   * @return UserResponse (Long id, String username, String email, String
-   *         avatarUrl, LocalDateTime createdAt)
+   * @param UserRequest
+   *                    - String email,
+   *                    - String username,
+   *                    - String password
+   * @return UserResponse
+   *         - Long id,
+   *         - String username,
+   *         - String email,
+   *         - String avatarUrl,
+   *         - LocalDateTime createdAt
    */
   @Override
   public UserResponse register(UserRequest request) {
@@ -47,15 +54,17 @@ public class UserServiceImpl implements UserService {
    * 이메일로 사용자 조회
    * 
    * @param String email
-   * @return User Entity (Long id, String username, String email, String password,
-   *         String avatarUrl, LocalDateTime createdAt)
+   * @return User Entity
+   *         - Long id,
+   *         - String username,
+   *         - String email,
+   *         - String password,
+   *         - String avatarUrl,
+   *         - LocalDateTime createdAt
    */
   @Override
   public User findByEmail(String email) {
     User user = userRepository.findByEmail(email);
-    if (user == null) {
-      throw new ApiException(ErrorCode.USER_NOT_FOUND);
-    }
     return user;
   }
 }

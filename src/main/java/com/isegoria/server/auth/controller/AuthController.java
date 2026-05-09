@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.isegoria.server.auth.request.AuthRequest;
+import com.isegoria.server.auth.response.AuthResponse;
 import com.isegoria.server.auth.service.AuthService;
 import com.isegoria.server.global.api.Api;
 import com.isegoria.server.global.message.ResponseMessage;
@@ -26,13 +28,42 @@ public class AuthController {
   /**
    * 회원가입
    * 
-   * @param UserRequest (String email, String username, String password)
-   * @return UserResponse (Long id, String username, String email, String
-   *         avatarUrl, LocalDateTime createdAt)
+   * @param UserRequest
+   *                    - String email,
+   *                    - String username,
+   *                    - String password
+   * @return UserResponse
+   *         - Long id
+   *         - String username,
+   *         - String email,
+   *         - String avatarUrl,
+   *         - LocalDateTime createdAt
    */
   @PostMapping("register")
   public Api<UserResponse> register(@Valid @RequestBody UserRequest request) {
     UserResponse response = authService.register(request);
     return Api.OK(response, ResponseMessage.REGISTER_SUCCESS);
+  }
+
+  /**
+   * 로그인
+   * 
+   * @param AuthRequest
+   *                    - String email,
+   *                    - String password
+   * @return AuthResponse
+   *         - Long id
+   *         - String username
+   *         - String email
+   *         - String avatarUrl
+   *         - LocalDateTime createdAt
+   *         - TokenResponse serverTokens
+   *         - String accessToken
+   *         - String refreshToken
+   */
+  @PostMapping("login")
+  public Api<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
+    AuthResponse response = authService.login(request);
+    return Api.OK(response, ResponseMessage.LOGIN_SUCCESS);
   }
 }

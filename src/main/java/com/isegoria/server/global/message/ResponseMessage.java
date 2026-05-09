@@ -6,7 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ResponseMessage implements ResponseMessageInterface {
-  REGISTER_SUCCESS("회원가입이 성공적으로 완료되었습니다.");
+  REGISTER_SUCCESS("회원가입이 성공적으로 완료되었습니다."),
+  LOGIN_SUCCESS("로그인이 성공적으로 완료되었습니다."),
+
+  ;
 
   private final String message;
 }
