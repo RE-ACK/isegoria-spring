@@ -1,11 +1,12 @@
 package com.isegoria.server.global.jwt;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Component;
 
@@ -19,17 +20,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtProvider {
 
   private final Constants constants;
-  private final Key accessTokenSigningKey;
-  private final Key refreshTokenSigningKey;
+  private final SecretKey accessTokenSigningKey;
+  private final SecretKey refreshTokenSigningKey;
 
   public JwtProvider(Constants constants) {
     this.constants = constants;
@@ -45,7 +44,7 @@ public class JwtProvider {
     return constants.getRefreshTokenExpiredAt();
   }
 
-  private Key getSigningKey(String secretKeyBase64) {
+  private SecretKey getSigningKey(String secretKeyBase64) {
     return Keys.hmacShaKeyFor(secretKeyBase64.getBytes(StandardCharsets.UTF_8));
   }
 
@@ -87,7 +86,7 @@ public class JwtProvider {
     return parseClaims(refreshToken, refreshTokenSigningKey, "리프레시 토큰");
   }
 
-  private Claims parseClaims(String token, Key signingKey, String tokenType) {
+  private Claims parseClaims(String token, SecretKey signingKey, String tokenType) {
     try {
       return Jwts.parserBuilder()
           .setSigningKey(signingKey)
