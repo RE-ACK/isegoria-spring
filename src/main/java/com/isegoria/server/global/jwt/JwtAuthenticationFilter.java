@@ -49,12 +49,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         throw new ApiException(ErrorCode.INVALID_ACCESS_TOKEN);
       }
 
-      String userIdStr = claims.getSubject();
-      if (!StringUtils.hasText(userIdStr)) {
+      Long userId = Long.valueOf(claims.getSubject());
+      if (userId == null) {
         throw new ApiException(ErrorCode.INVALID_ACCESS_TOKEN);
       }
-
-      UUID userId = UUID.fromString(userIdStr);
 
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
           new JwtPayload(userId), null, null);
