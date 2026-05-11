@@ -2,8 +2,12 @@ package com.isegoria.server.auth.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.isegoria.server.user.service.UserService;
+
+import io.jsonwebtoken.Claims;
+
 import com.isegoria.server.auth.request.AuthRequest;
 import com.isegoria.server.auth.response.AuthResponse;
 import com.isegoria.server.auth.response.TokenResponse;
@@ -93,5 +97,42 @@ public class AuthServiceImpl implements AuthService {
     String refreshToken = jwtProvider.createRefreshToken(userId);
 
     return TokenResponse.from(accessToken, refreshToken);
+  }
+
+  /**
+   * 토큰 재발급
+   * 
+   * @apiNote 클라이언트는 Authorization 헤더에 "Refresh {refreshToken}" 형식으로 리프레시 토큰을 전달해야
+   *          합니다.
+   * @param String authorization
+   * @return TokenResponse
+   *         - String accessToken
+   *         - String refreshToken
+   */
+  @Override
+  public TokenResponse refresh(String authorization) {
+    String oldRefreshToken = parserRefreshToken(authorization);
+    if (oldRefreshToken == null) {
+      throw new ApiException(ErrorCode.INVALID_REFRESH_TOKEN);
+    }
+    Claims claims = jwtProvider.validateRefreshToken(oldRefreshToken);
+    if (claims == null) {
+      throw new ApiException(ErrorCode.INVALID_REFRESH_TOKEN);
+    }
+    Long userId = Long.parseLong(claims.getSubject());
+    User user = userService.findById(userId);
+    TokenResponse newTokens = generateTokens(user.getId());
+    return newTokens;
+  }
+
+  private String parserRefreshToken(String authorization) {
+    final String REFRESH_PREFIX = "Refresh ";
+    final int PREFIX_LENGTH = REFRESH_PREFIX.length();
+    if (StringUtils.hasText(authorization) && authorization.startsWith(REFRESH_PREFIX)) {
+      if (authorization.length() > PREFIX_LENGTH) {
+        return authorization.substring(PREFIX_LENGTH);
+      }
+    }
+    return null;
   }
 }

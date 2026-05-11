@@ -2,11 +2,13 @@ package com.isegoria.server.auth.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isegoria.server.auth.request.AuthRequest;
 import com.isegoria.server.auth.response.AuthResponse;
+import com.isegoria.server.auth.response.TokenResponse;
 import com.isegoria.server.auth.service.AuthService;
 import com.isegoria.server.global.api.Api;
 import com.isegoria.server.global.message.ResponseMessage;
@@ -65,5 +67,21 @@ public class AuthController {
   public Api<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
     AuthResponse response = authService.login(request);
     return Api.OK(response, ResponseMessage.LOGIN_SUCCESS);
+  }
+
+  /**
+   * 토큰 재발급
+   * 
+   * @apiNote 클라이언트는 Authorization 헤더에 "Refresh {refreshToken}" 형식으로 리프레시 토큰을 전달해야
+   *          합니다.
+   * @param String authorization
+   * @return TokenResponse
+   *         - String accessToken
+   *         - String refreshToken
+   */
+  @PostMapping("refresh")
+  public Api<TokenResponse> refresh(@RequestHeader("Authorization") String authorization) {
+    TokenResponse response = authService.refresh(authorization);
+    return Api.OK(response);
   }
 }

@@ -67,4 +67,10 @@ public class UserServiceImpl implements UserService {
     User user = userRepository.findByEmail(email);
     return user;
   }
+
+  @Override
+  public User findById(Long id) {
+    User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+    return user;
+  }
 }

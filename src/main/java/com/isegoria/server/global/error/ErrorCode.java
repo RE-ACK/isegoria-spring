@@ -21,6 +21,8 @@ public enum ErrorCode implements ErrorCodeInterface {
 
   // JWT 관련 에러
   INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 액세스 토큰입니다."),
+  INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 리프레시 토큰입니다."),
+  REFRESH_TOKEN_CLAIMS_INVALID(HttpStatus.UNAUTHORIZED.value(), "리프레시 토큰의 클레임이 유효하지 않습니다."),
 
   // Auth 관련 에러
   LOGIN_FAILED(HttpStatus.UNAUTHORIZED.value(), "이메일 혹은 비밀번호가 일치하지 않습니다."),
