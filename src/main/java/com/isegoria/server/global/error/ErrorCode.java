@@ -21,6 +21,14 @@ public enum ErrorCode implements ErrorCodeInterface {
   // JWT 관련 에러
   INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 액세스 토큰입니다."),
 
+
+  // 서버 관련 에러 :: 이민하
+  SERVER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 서버입니다."),
+  ALREADY_JOINED(HttpStatus.BAD_REQUEST.value(), "이미 가입된 서버입니다."),
+  INVITE_CODE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 초대 코드입니다."),
+  OWNER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST.value(), "서버 소유자는 나갈 수 없습니다."),
+  NO_PERMISSION(HttpStatus.FORBIDDEN.value(), "권한이 없습니다."),
+  MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 멤버가 서버에 없습니다."),
   ;
 
   private final Integer httpStatusCode;
