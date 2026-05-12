@@ -9,6 +9,11 @@ public enum ResponseMessage implements ResponseMessageInterface {
   REGISTER_SUCCESS("회원가입이 성공적으로 완료되었습니다."),
   LOGIN_SUCCESS("로그인이 성공적으로 완료되었습니다."),
 
+  // 서버 관련
+  KICK_MEMBER_SUCCESS("멤버를 쫒아냈습니다."),
+  DELETE_SERVER_SUCCESS("서버가 성공적으로 삭제되었습니다."),
+  LEAVE_SERVER_SUCCESS("성공적으로 서버를 나갔습니다.")
+
   ;
 
   private final String message;

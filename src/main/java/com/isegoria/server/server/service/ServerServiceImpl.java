@@ -53,6 +53,7 @@ public class ServerServiceImpl implements ServerService {
         Server server = serverRepository.findByInviteCode(inviteCode)
                 .orElseThrow(() -> new ApiException(ErrorCode.INVITE_CODE_NOT_FOUND));
 
+        
         if (serverMemberRepository.existsByServerAndUserId(server, userId)) {
             throw new ApiException(ErrorCode.ALREADY_JOINED);
         }
@@ -109,7 +110,7 @@ public class ServerServiceImpl implements ServerService {
             throw new ApiException(ErrorCode.NO_PERMISSION);
         }
 
-             if (ownerId.equals(targetUserId)) {
+        if (ownerId.equals(targetUserId)) {
             throw new ApiException(ErrorCode.NO_PERMISSION);
         }
 

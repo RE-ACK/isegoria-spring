@@ -3,6 +3,7 @@ package com.isegoria.server.server;
 import com.isegoria.server.global.annotations.CurrentUser;
 import com.isegoria.server.global.api.Api;
 import com.isegoria.server.global.jwt.JwtPayload;
+import com.isegoria.server.global.message.ResponseMessage;
 import com.isegoria.server.server.entity.Server;
 import com.isegoria.server.server.request.CreateServerRequest;
 import com.isegoria.server.server.request.JoinServerRequest;
@@ -68,7 +69,7 @@ public class ServerController {
 
         //Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
         serverService.deleteServer(user.getId(), serverId);
-        return Api.OK(null);
+        return Api.OK(ResponseMessage.DELETE_SERVER_SUCCESS);
     }
 
     // DELETE /servers/{serverId}/leave — 서버 나가기
@@ -79,7 +80,7 @@ public class ServerController {
 
        // Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
         serverService.leaveServer(user.getId(), serverId);
-        return Api.OK(null);
+        return Api.OK(ResponseMessage.DELETE_SERVER_SUCCESS);
     }
 
     // DELETE /servers/{serverId}/members/{targetUserId} — 멤버 추방
@@ -91,7 +92,7 @@ public class ServerController {
 
        // Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
         serverService.kickMember(user.getId(), serverId, targetUserId);
-        return Api.OK(null);
+        return Api.OK(ResponseMessage.KICK_MEMBER_SUCCESS);
     }
 
     // POST /servers/{serverId}/invite — 초대 코드 재발급
