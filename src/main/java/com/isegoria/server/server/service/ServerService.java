@@ -1,6 +1,7 @@
 package com.isegoria.server.server.service;
 
 import com.isegoria.server.server.entity.Server;
+import com.isegoria.server.server.request.CreateServerRequest;
 import com.isegoria.server.server.response.InviteCodeResponse;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public interface ServerService {
 
     // 서버 생성
-    Server createServer(Long ownerId, String name, String iconUrl);
+    Server createServer(Long ownerId, CreateServerRequest request);
 
     // 초대 코드로 서버 입장
     Server joinServer(Long userId, String inviteCode);

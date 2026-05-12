@@ -7,6 +7,7 @@ import com.isegoria.server.server.entity.Server;
 import com.isegoria.server.server.entity.ServerMember;
 import com.isegoria.server.server.repository.ServerMemberRepository;
 import com.isegoria.server.server.repository.ServerRepository;
+import com.isegoria.server.server.request.CreateServerRequest;
 import com.isegoria.server.server.response.InviteCodeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,23 +28,20 @@ public class ServerServiceImpl implements ServerService {
     // ───────────────────────────────────────────
     @Transactional
     @Override
-    public Server createServer(Long ownerId, String name, String iconUrl) {
-        Server server = Server.builder()
-                .name(name)
-                .ownerId(ownerId)
-                .inviteCode(generateInviteCode())
-                .iconUrl(iconUrl)
-                .build();
-        serverRepository.save(server);
+    public Server createServer(Long ownerId, CreateServerRequest request) {
+
+
+        Server ServerEntity = CreateServerRequest.toEntity(request, ownerId, generateInviteCode());
+        serverRepository.save(ServerEntity);
 
         ServerMember ownerMember = ServerMember.builder()
-                .server(server)
+                .server(ServerEntity)
                 .userId(ownerId)
                 .role(MemberRole.OWNER)
                 .build();
         serverMemberRepository.save(ownerMember);
 
-        return server;
+        return ServerEntity;
     }
 
     // ───────────────────────────────────────────
@@ -111,7 +109,7 @@ public class ServerServiceImpl implements ServerService {
             throw new ApiException(ErrorCode.NO_PERMISSION);
         }
 
-        if (ownerId.equals(targetUserId)) {
+             if (ownerId.equals(targetUserId)) {
             throw new ApiException(ErrorCode.NO_PERMISSION);
         }
 

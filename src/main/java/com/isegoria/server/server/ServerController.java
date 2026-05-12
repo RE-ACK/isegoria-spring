@@ -1,6 +1,8 @@
 package com.isegoria.server.server;
 
+import com.isegoria.server.global.annotations.CurrentUser;
 import com.isegoria.server.global.api.Api;
+import com.isegoria.server.global.jwt.JwtPayload;
 import com.isegoria.server.server.entity.Server;
 import com.isegoria.server.server.request.CreateServerRequest;
 import com.isegoria.server.server.request.JoinServerRequest;
@@ -25,33 +27,33 @@ public class ServerController {
     // POST /servers — 서버 생성
     @PostMapping
     public Api<ServerResponse> createServer(
-            @AuthenticationPrincipal Long userId, //userid 추출
+            @CurrentUser JwtPayload user, //userid 추출
             @Valid @RequestBody CreateServerRequest request) {
         //검증, JSON 바디 -> Java 객체로 변환
 
         //Long ownerId = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
-        Server server = serverService.createServer(userId, request.name(), request.iconUrl());
+        Server server = serverService.createServer(user.getId(),request);
         return Api.OK(ServerResponse.from(server));
     }
 
     // POST /servers/join — 초대 코드로 서버 입장
     @PostMapping("/join")
     public Api<ServerResponse> joinServer(
-            @AuthenticationPrincipal Long userId,
+            @CurrentUser JwtPayload user,
             @Valid @RequestBody JoinServerRequest request) {
 
         //Long joinerId = (userId != null) ? userId : 2L; // TODO: auth 구현 후 제거
-        Server server = serverService.joinServer(userId, request.inviteCode());
+        Server server = serverService.joinServer(user.getId(), request.inviteCode());
         return Api.OK(ServerResponse.from(server));
     }
 
     // GET /servers/my — 내 서버 목록
     @GetMapping("/my")
     public Api<List<ServerResponse>> getServerList(
-            @AuthenticationPrincipal Long userId) {
+            @CurrentUser JwtPayload user){
 
         //Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
-        List<ServerResponse> responses = serverService.getServerList(userId)
+        List<ServerResponse> responses = serverService.getServerList(user.getId())
                 .stream()
                 .map(ServerResponse::from)
                 .toList();
@@ -61,45 +63,45 @@ public class ServerController {
     // DELETE /servers/{serverId} — 서버 삭제
     @DeleteMapping("/{serverId}")
     public Api<Void> deleteServer(
-            @AuthenticationPrincipal Long userId,
+            @CurrentUser JwtPayload user,
             @PathVariable Long serverId) {
 
         //Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
-        serverService.deleteServer(userId, serverId);
+        serverService.deleteServer(user.getId(), serverId);
         return Api.OK(null);
     }
 
     // DELETE /servers/{serverId}/leave — 서버 나가기
     @DeleteMapping("/{serverId}/leave")
     public Api<Void> leaveServer(
-            @AuthenticationPrincipal Long userId,
+            @CurrentUser JwtPayload user,
             @PathVariable Long serverId) {
 
        // Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
-        serverService.leaveServer(userId, serverId);
+        serverService.leaveServer(user.getId(), serverId);
         return Api.OK(null);
     }
 
     // DELETE /servers/{serverId}/members/{targetUserId} — 멤버 추방
     @DeleteMapping("/{serverId}/members/{targetUserId}")
     public Api<Void> kickMember(
-            @AuthenticationPrincipal Long userId,
-            @PathVariable Long serverId,
-            @PathVariable Long targetUserId) {
+            @CurrentUser JwtPayload user,
+            @PathVariable("serverId") Long serverId,
+            @PathVariable("targetUserId") Long targetUserId) {
 
        // Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
-        serverService.kickMember(userId, serverId, targetUserId);
+        serverService.kickMember(user.getId(), serverId, targetUserId);
         return Api.OK(null);
     }
 
     // POST /servers/{serverId}/invite — 초대 코드 재발급
     @PostMapping("/{serverId}/invite")
     public Api<InviteCodeResponse> regenerateInviteCode(
-            @AuthenticationPrincipal Long userId,
+            @CurrentUser JwtPayload user,
             @PathVariable Long serverId) {
 
        // Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
-        InviteCodeResponse newCode = serverService.regenerateInviteCode(userId, serverId);
+        InviteCodeResponse newCode = serverService.regenerateInviteCode(user.getId(), serverId);
         return Api.OK(newCode);
     }
 }
