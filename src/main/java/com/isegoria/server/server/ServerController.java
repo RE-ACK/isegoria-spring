@@ -29,7 +29,8 @@ public class ServerController {
             @Valid @RequestBody CreateServerRequest request) {
         //검증, JSON 바디 -> Java 객체로 변환
 
-        Server server = serverService.createServer(userId, request.name(), request.iconUrl());
+        Long ownerId = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
+        Server server = serverService.createServer(ownerId, request.name(), request.iconUrl());
         return Api.OK(ServerResponse.from(server));
     }
 
@@ -39,7 +40,8 @@ public class ServerController {
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody JoinServerRequest request) {
 
-        Server server = serverService.joinServer(userId, request.inviteCode());
+        Long joinerId = (userId != null) ? userId : 2L; // TODO: auth 구현 후 제거
+        Server server = serverService.joinServer(joinerId, request.inviteCode());
         return Api.OK(ServerResponse.from(server));
     }
 
@@ -48,7 +50,8 @@ public class ServerController {
     public Api<List<ServerResponse>> getServerList(
             @AuthenticationPrincipal Long userId) {
 
-        List<ServerResponse> responses = serverService.getServerList(userId)
+        Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
+        List<ServerResponse> responses = serverService.getServerList(id)
                 .stream()
                 .map(ServerResponse::from)
                 .toList();
@@ -61,7 +64,8 @@ public class ServerController {
             @AuthenticationPrincipal Long userId,
             @PathVariable Long serverId) {
 
-        serverService.deleteServer(userId, serverId);
+        Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
+        serverService.deleteServer(id, serverId);
         return Api.OK(null);
     }
 
@@ -71,7 +75,8 @@ public class ServerController {
             @AuthenticationPrincipal Long userId,
             @PathVariable Long serverId) {
 
-        serverService.leaveServer(userId, serverId);
+        Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
+        serverService.leaveServer(id, serverId);
         return Api.OK(null);
     }
 
@@ -82,7 +87,8 @@ public class ServerController {
             @PathVariable Long serverId,
             @PathVariable Long targetUserId) {
 
-        serverService.kickMember(userId, serverId, targetUserId);
+        Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
+        serverService.kickMember(id, serverId, targetUserId);
         return Api.OK(null);
     }
 
@@ -92,7 +98,8 @@ public class ServerController {
             @AuthenticationPrincipal Long userId,
             @PathVariable Long serverId) {
 
-        InviteCodeResponse newCode = serverService.regenerateInviteCode(userId, serverId);
+        Long id = (userId != null) ? userId : 1L; // TODO: auth 구현 후 제거
+        InviteCodeResponse newCode = serverService.regenerateInviteCode(id, serverId);
         return Api.OK(newCode);
     }
 }

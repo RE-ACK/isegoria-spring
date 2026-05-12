@@ -19,4 +19,7 @@ public interface ServerMemberRepository extends JpaRepository<ServerMember, Long
     // 나가기 / 추방 시 삭제
     // → DELETE FROM server_members WHERE server_id = ? AND user_id = ?
     void deleteByServerAndUserId(Server server, Long userId);
+
+    // 서버 삭제 시 멤버 전체 삭제
+    void deleteAllByServer(Server server);
 }

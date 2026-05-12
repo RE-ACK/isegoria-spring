@@ -157,6 +157,7 @@ public class ServerServiceImpl implements ServerService {
             throw new ApiException(ErrorCode.NO_PERMISSION);
         }
 
+        serverMemberRepository.deleteAllByServer(server);
         serverRepository.delete(server);
     }
 

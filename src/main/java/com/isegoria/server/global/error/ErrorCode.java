@@ -37,7 +37,12 @@ public enum ErrorCode implements ErrorCodeInterface {
   OWNER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST.value(), "서버 소유자는 나갈 수 없습니다."),
   NO_PERMISSION(HttpStatus.FORBIDDEN.value(), "권한이 없습니다."),
   MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 멤버가 서버에 없습니다."),
+
+  //임시 추가
+  EMAIL_ALREADY_EXISTS(HttpStatus.NOT_FOUND.value(),"이미 존재하는 이메일 입니다")
   ;
+
+
 
 
   private final Integer httpStatusCode;
