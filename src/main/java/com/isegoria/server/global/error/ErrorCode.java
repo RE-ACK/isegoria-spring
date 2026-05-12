@@ -29,7 +29,16 @@ public enum ErrorCode implements ErrorCodeInterface {
 
   // User 관련 에러
   USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "사용자를 찾을 수 없습니다."),
-  EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT.value(), "이미 존재하는 이메일입니다.");
+
+  // 서버 관련 에러 :: 이민하
+  SERVER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 서버입니다."),
+  ALREADY_JOINED(HttpStatus.BAD_REQUEST.value(), "이미 가입된 서버입니다."),
+  INVITE_CODE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 초대 코드입니다."),
+  OWNER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST.value(), "서버 소유자는 나갈 수 없습니다."),
+  NO_PERMISSION(HttpStatus.FORBIDDEN.value(), "권한이 없습니다."),
+  MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 멤버가 서버에 없습니다."),
+  ;
+
 
   private final Integer httpStatusCode;
   private final String message;
