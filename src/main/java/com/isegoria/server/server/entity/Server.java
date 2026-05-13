@@ -46,4 +46,12 @@ public class Server {
     public void updateInviteCode(String newCode) {
         this.inviteCode = newCode;
     }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

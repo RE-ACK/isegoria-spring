@@ -37,6 +37,7 @@ public enum ErrorCode implements ErrorCodeInterface {
   OWNER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST.value(), "서버 소유자는 나갈 수 없습니다."),
   NO_PERMISSION(HttpStatus.FORBIDDEN.value(), "권한이 없습니다."),
   MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 멤버가 서버에 없습니다."),
+  DELETE_SERVER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 삭제에 실패했습니다."),
 
   // User 관련 에러
   DELETE_USER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "사용자 삭제에 실패했습니다."),

@@ -14,6 +14,9 @@ public interface ServerService {
     // 서버 생성
     Server createServer(Long ownerId, CreateServerRequest request);
 
+    // 서버 정보 수정
+    Server updateServer(Long id, Long serverId, CreateServerRequest request);
+
     // 초대 코드로 서버 입장
     Server joinServer(Long userId, String inviteCode);
 
@@ -31,4 +34,6 @@ public interface ServerService {
 
     // 서버 삭제
     void deleteServer(Long ownerId, Long serverId);
+
+    Server findById(Long serverId);
 }

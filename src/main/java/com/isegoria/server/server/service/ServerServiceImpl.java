@@ -2,6 +2,7 @@ package com.isegoria.server.server.service;
 
 import com.isegoria.server.global.error.ErrorCode;
 import com.isegoria.server.global.exception.ApiException;
+import com.isegoria.server.image.service.ImageService;
 import com.isegoria.server.server.entity.MemberRole;
 import com.isegoria.server.server.entity.Server;
 import com.isegoria.server.server.entity.ServerMember;
@@ -10,12 +11,14 @@ import com.isegoria.server.server.repository.ServerRepository;
 import com.isegoria.server.server.request.CreateServerRequest;
 import com.isegoria.server.server.request.JoinServerRequest;
 import com.isegoria.server.server.response.InviteCodeResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class ServerServiceImpl implements ServerService {
 
     private final ServerRepository serverRepository;
     private final ServerMemberRepository serverMemberRepository;
+    private final ImageService imageService;
 
     // ───────────────────────────────────────────
     // 서버 생성
@@ -31,14 +35,62 @@ public class ServerServiceImpl implements ServerService {
     @Override
     public Server createServer(Long ownerId, CreateServerRequest request) {
 
-
         Server ServerEntity = CreateServerRequest.toEntity(request, ownerId, generateInviteCode());
-        serverRepository.save(ServerEntity);
+        Server newServer = serverRepository.save(ServerEntity);
+        String newIconUrl = request.getIconUrl();
+        if (newIconUrl != null && !newIconUrl.isEmpty()) {
+            List<String> images = imageService.createImage(
+                    newServer.getId().toString(),
+                    List.of(newIconUrl),
+                    "server");
+            newServer.setIconUrl(images.get(0));
+            newServer = serverRepository.save(newServer);
+        }
 
-        ServerMember ownerMember = CreateServerRequest.toOwnerMember(ServerEntity, ownerId);
+        ServerMember ownerMember = CreateServerRequest.toOwnerMember(newServer, ownerId);
         serverMemberRepository.save(ownerMember);
 
-        return ServerEntity;
+        return newServer;
+    }
+
+    // ───────────────────────────────────────────
+    // 서버 정보 수정 (OWNER만 가능)
+    // ───────────────────────────────────────────
+    @Override
+    public Server updateServer(Long userId, Long serverId, CreateServerRequest request) {
+        Server server = this.findById(serverId);
+
+        if (!server.getOwnerId().equals(userId)) {
+            throw new ApiException(ErrorCode.NO_PERMISSION);
+        }
+        server.setName(request.getName());
+        String newIconUrl = request.getIconUrl();
+        String currentIconUrl = server.getIconUrl();
+
+        if (newIconUrl != null && !newIconUrl.trim().isEmpty()) {
+
+            if (!Objects.equals(newIconUrl, currentIconUrl)) {
+
+                if (currentIconUrl != null) {
+                    List<String> images = imageService.updateImage(
+                            serverId.toString(),
+                            List.of(newIconUrl),
+                            List.of(currentIconUrl),
+                            "user");
+                    server.setIconUrl(images.get(0));
+                } else {
+                    List<String> images = imageService.createImage(
+                            serverId.toString(),
+                            List.of(newIconUrl),
+                            "user");
+                    server.setIconUrl(images.get(0));
+                }
+            }
+        }
+
+        server = serverRepository.save(server);
+
+        return server;
     }
 
     // ───────────────────────────────────────────
@@ -50,7 +102,6 @@ public class ServerServiceImpl implements ServerService {
         Server server = serverRepository.findByInviteCode(inviteCode)
                 .orElseThrow(() -> new ApiException(ErrorCode.INVITE_CODE_NOT_FOUND));
 
-        
         if (serverMemberRepository.existsByServerAndUserId(server, userId)) {
             throw new ApiException(ErrorCode.ALREADY_JOINED);
         }
@@ -151,6 +202,13 @@ public class ServerServiceImpl implements ServerService {
 
         serverMemberRepository.deleteAllByServer(server);
         serverRepository.delete(server);
+
+        boolean exists = serverRepository.existsById(serverId);
+        if (exists) {
+            throw new ApiException(ErrorCode.DELETE_SERVER_FAILED);
+        } else if (server.getIconUrl() != null) {
+            imageService.deleteImage(serverId.toString(), "server");
+        }
     }
 
     // ───────────────────────────────────────────
@@ -161,8 +219,7 @@ public class ServerServiceImpl implements ServerService {
                 .orElseThrow(() -> new ApiException(ErrorCode.SERVER_NOT_FOUND));
     }
 
-    private static final String CHARACTERS =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private String generateInviteCode() {
@@ -171,5 +228,10 @@ public class ServerServiceImpl implements ServerService {
             sb.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
         }
         return sb.toString();
+    }
+
+    public Server findById(Long serverId) {
+        return serverRepository.findById(serverId)
+                .orElseThrow(() -> new ApiException(ErrorCode.SERVER_NOT_FOUND));
     }
 }
