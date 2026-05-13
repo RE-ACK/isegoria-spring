@@ -38,12 +38,14 @@ public enum ErrorCode implements ErrorCodeInterface {
   NO_PERMISSION(HttpStatus.FORBIDDEN.value(), "권한이 없습니다."),
   MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 멤버가 서버에 없습니다."),
 
-  //임시 추가
-  EMAIL_ALREADY_EXISTS(HttpStatus.NOT_FOUND.value(),"이미 존재하는 이메일 입니다")
-  ;
+  // User 관련 에러
+  DELETE_USER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "사용자 삭제에 실패했습니다."),
 
+  // 임시 추가
+  EMAIL_ALREADY_EXISTS(HttpStatus.NOT_FOUND.value(), "이미 존재하는 이메일 입니다"),
 
-
+  // Image 관련 에러
+  SAVE_IMAGE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미지 저장에 실패했습니다.");
 
   private final Integer httpStatusCode;
   private final String message;

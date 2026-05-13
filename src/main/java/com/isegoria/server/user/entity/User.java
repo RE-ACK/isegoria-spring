@@ -45,4 +45,12 @@ public class User {
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public void setAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
+  }
+
 }

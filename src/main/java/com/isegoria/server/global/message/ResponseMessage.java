@@ -12,9 +12,11 @@ public enum ResponseMessage implements ResponseMessageInterface {
   // 서버 관련
   KICK_MEMBER_SUCCESS("멤버를 쫒아냈습니다."),
   DELETE_SERVER_SUCCESS("서버가 성공적으로 삭제되었습니다."),
-  LEAVE_SERVER_SUCCESS("성공적으로 서버를 나갔습니다.")
+  LEAVE_SERVER_SUCCESS("성공적으로 서버를 나갔습니다."),
 
-  ;
+  // 유저 관련
+  UPDATE_USER_SUCCESS("회원 정보가 성공적으로 업데이트되었습니다."),
+  DELETE_USER_SUCCESS("회원 탈퇴가 성공적으로 완료되었습니다.");
 
   private final String message;
 }
