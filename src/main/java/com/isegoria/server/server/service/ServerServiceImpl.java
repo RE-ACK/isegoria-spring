@@ -8,6 +8,7 @@ import com.isegoria.server.server.entity.ServerMember;
 import com.isegoria.server.server.repository.ServerMemberRepository;
 import com.isegoria.server.server.repository.ServerRepository;
 import com.isegoria.server.server.request.CreateServerRequest;
+import com.isegoria.server.server.request.JoinServerRequest;
 import com.isegoria.server.server.response.InviteCodeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,7 @@ public class ServerServiceImpl implements ServerService {
         Server ServerEntity = CreateServerRequest.toEntity(request, ownerId, generateInviteCode());
         serverRepository.save(ServerEntity);
 
-        ServerMember ownerMember = ServerMember.builder()
-                .server(ServerEntity)
-                .userId(ownerId)
-                .role(MemberRole.OWNER)
-                .build();
+        ServerMember ownerMember = CreateServerRequest.toOwnerMember(ServerEntity, ownerId);
         serverMemberRepository.save(ownerMember);
 
         return ServerEntity;
@@ -58,11 +55,7 @@ public class ServerServiceImpl implements ServerService {
             throw new ApiException(ErrorCode.ALREADY_JOINED);
         }
 
-        ServerMember newMember = ServerMember.builder()
-                .server(server)
-                .userId(userId)
-                .role(MemberRole.MEMBER)
-                .build();
+        ServerMember newMember = JoinServerRequest.toEntity(server, userId);
         serverMemberRepository.save(newMember);
 
         return server;

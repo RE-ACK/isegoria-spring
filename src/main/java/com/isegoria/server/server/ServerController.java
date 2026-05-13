@@ -44,7 +44,7 @@ public class ServerController {
             @Valid @RequestBody JoinServerRequest request) {
 
         //Long joinerId = (userId != null) ? userId : 2L; // TODO: auth 구현 후 제거
-        Server server = serverService.joinServer(user.getId(), request.inviteCode());
+        Server server = serverService.joinServer(user.getId(), request.getInviteCode());
         return Api.OK(ServerResponse.from(server));
     }
 

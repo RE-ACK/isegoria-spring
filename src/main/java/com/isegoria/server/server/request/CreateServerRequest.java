@@ -1,8 +1,8 @@
 package com.isegoria.server.server.request;
 
+import com.isegoria.server.server.entity.MemberRole;
 import com.isegoria.server.server.entity.Server;
-import com.isegoria.server.user.entity.User;
-import com.isegoria.server.user.request.UserRequest;
+import com.isegoria.server.server.entity.ServerMember;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -21,13 +21,20 @@ public class CreateServerRequest{
 
         private String iconUrl;    // 선택사항, null 가능
 
-        public static Server toEntity(CreateServerRequest request,Long ownerId, String inviteCode) {
+        public static Server toEntity(CreateServerRequest request, Long ownerId, String inviteCode) {
                 return Server.builder()
                         .name(request.getName())
                         .ownerId(ownerId)
                         .inviteCode(inviteCode)
                         .iconUrl(request.getIconUrl())
                         .build();
+        }
 
+        public static ServerMember toOwnerMember(Server server, Long ownerId) {
+                return ServerMember.builder()
+                        .server(server)
+                        .userId(ownerId)
+                        .role(MemberRole.OWNER)
+                        .build();
         }
 }
